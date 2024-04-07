@@ -8,6 +8,7 @@ import subprocess
 import shutil
 import tempfile
 from tqdm import tqdm
+import argparse
 
 
 def get_architecture():
@@ -52,21 +53,26 @@ def usage():
     print("  -a\t\tSpecify the architecture")
 
 def main():
-    if len(sys.argv) == 1:
-        usage()
+   parser = argparse.ArgumentParser(description='Download libc6 package for a specified version from the Ubuntu launchpad repository.')
+    parser.add_argument('version_number', metavar='VERSION', type=str, nargs='?', help='The version number of the libc6 package')
+    parser.add_argument('-a', '--auto-arch', action='store_true', help='Resolve architecture automatically')
+    
+    args = parser.parse_args()
+    
+    if args.version_number is None or args.version_number == '-h':
+        parser.print_help()
         return
-    elif len(sys.argv) == 2 and sys.argv[1] == '-a':
-        usage()
-        return
-    elif len(sys.argv) == 3 and sys.argv[1] == '-a':
-        arch_base = sys.argv[2]
-        version_number = input("Enter the version number (e.g., 2.34): ")
+
+    if args.auto_arch:
+        arch_base = input("Enter the architecture (e.g., amd64, i386): ")
+        if arch_base not in ['amd64', 'i386']:
+            print("[-] \033[91mUnsupported architecture. Supported architectures are: amd64, i386\033[0m")
+            return
     else:
         arch_base = get_architecture()
         if not arch_base:
-            print("[-] \033[91mUnsupported architecture.\033[0m")
+            print("[-] \033[91mUnsupported architecture. Supported architectures are: amd64, i386\033[0m")
             return
-        version_number = sys.argv[1]
 
     seqnum = 0
     while seqnum < 10:
