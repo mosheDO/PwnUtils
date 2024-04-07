@@ -5,6 +5,7 @@ import requests
 import subprocess
 import shutil
 import tempfile
+from tqdm import tqdm
 
 def get_architecture():
     machine = platform.machine()
@@ -20,15 +21,21 @@ def download_file(version_number, seqnum, arch_base):
     url = f"https://launchpad.net/ubuntu/+archive/primary/+files/libc6_{version_number}-0ubuntu{seqnum}_{arch_base}.deb"
     filename = f"libc6_{version_number}-0ubuntu{seqnum}_{arch_base}.deb"
     print(f"[+] \033[92mDownloading {filename}...\033[0m")
-    response = requests.get(url)
-    if response.status_code == 200:
-        with open(filename, 'wb') as file:
-            file.write(response.content)
+    response = requests.get(url, stream=True)
+    total_size = int(response.headers.get('content-length', 0))
+    block_size = 1024
+    progress_bar = tqdm(total=total_size, unit='B', unit_scale=True)
+    with open(filename, 'wb') as file:
+        for data in response.iter_content(block_size):
+            progress_bar.update(len(data))
+            file.write(data)
+    progress_bar.close()
+    if total_size != 0 and progress_bar.n != total_size:
+        print(f"[-] \033[91mFailed to download {filename}\033[0m")
+        return None
+    else:
         print(f"[+] \033[92mDownloaded {filename}\033[0m")
         return filename
-    else:
-        print(f"[-] \033[91mFailed to download {filename}. Status code: {response.status_code}\033[0m")
-        return None
 
 def extract_deb(deb_file, extract_dir):
     print(f"[+] \033[92mExtracting {deb_file} to {extract_dir}...\033[0m")
