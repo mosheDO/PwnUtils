@@ -76,7 +76,7 @@ def main():
 
     seqnum = 0
     while seqnum < 10:
-        deb_file = download_file(version_number, seqnum, arch_base)
+        deb_file = download_file(args.version_number, seqnum, arch_base)
         if deb_file:
             with tempfile.TemporaryDirectory() as tmp_dir:
                 extract_deb(deb_file, tmp_dir)
