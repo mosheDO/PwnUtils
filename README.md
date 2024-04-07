@@ -9,7 +9,7 @@ Usage
 
 You can run the script with the following command:
 
-`python script.py <version_number>`
+`python script.py <version_number>` or put that in path directory
 
 If you don't specify the version number as a command-line argument, the script will prompt you to enter it interactively.
 
