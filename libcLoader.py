@@ -53,7 +53,7 @@ def usage():
     print("  -a\t\tSpecify the architecture")
 
 def main():
-   parser = argparse.ArgumentParser(description='Download libc6 package for a specified version from the Ubuntu launchpad repository.')
+    parser = argparse.ArgumentParser(description='Download libc6 package for a specified version from the Ubuntu launchpad repository.')
     parser.add_argument('version_number', metavar='VERSION', type=str, nargs='?', help='The version number of the libc6 package')
     parser.add_argument('-a', '--auto-arch', action='store_true', help='Resolve architecture automatically')
     
