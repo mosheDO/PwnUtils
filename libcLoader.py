@@ -28,6 +28,9 @@ def download_file(version_number, seqnum, arch_base):
     print(f"[+] \033[92mDownloading {filename}...\033[0m")
     response = requests.get(url, stream=True)
     total_size = int(response.headers.get('content-length', 0))
+    if total_size < 1024 * 1024:  # Check if file size is below 1 MB
+        print("[-] \033[91mDownloaded file size is below 1 MB. Skipping...\033[0m")
+        return None
     block_size = 1024
     progress_bar = tqdm(total=total_size, unit='B', unit_scale=True)
     with open(filename, 'wb') as file:
@@ -35,7 +38,7 @@ def download_file(version_number, seqnum, arch_base):
             progress_bar.update(len(data))
             file.write(data)
     progress_bar.close()
-    if total_size != 0 or progress_bar.n != total_size:
+    if total_size != 0 and progress_bar.n != total_size:
         print(f"[-] \033[91mFailed to download {filename}\033[0m")
         return None
     else:
