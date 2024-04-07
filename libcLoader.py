@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import os
 import sys
 import platform
@@ -6,6 +8,7 @@ import subprocess
 import shutil
 import tempfile
 from tqdm import tqdm
+
 
 def get_architecture():
     machine = platform.machine()
@@ -16,6 +19,7 @@ def get_architecture():
     else:
         # Add more cases as needed for other architectures
         return None
+
 
 def download_file(version_number, seqnum, arch_base):
     url = f"https://launchpad.net/ubuntu/+archive/primary/+files/libc6_{version_number}-0ubuntu{seqnum}_{arch_base}.deb"
@@ -37,9 +41,11 @@ def download_file(version_number, seqnum, arch_base):
         print(f"[+] \033[92mDownloaded {filename}\033[0m")
         return filename
 
+
 def extract_deb(deb_file, extract_dir):
     print(f"[+] \033[92mExtracting {deb_file} to {extract_dir}...\033[0m")
     subprocess.run(["dpkg", "-x", deb_file, extract_dir])
+
 
 def main():
     version_number = sys.argv[1] if len(sys.argv) > 1 else input("Enter the version number (e.g., 2.34): ")
@@ -64,6 +70,7 @@ def main():
                 print(f"[+] \033[92mDeleted {deb_file}\033[0m")
                 break
         seqnum += 1
+
 
 if __name__ == "__main__":
     main()
