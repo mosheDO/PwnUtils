@@ -46,13 +46,27 @@ def extract_deb(deb_file, extract_dir):
     print(f"[+] \033[92mExtracting {deb_file} to {extract_dir}...\033[0m")
     subprocess.run(["dpkg", "-x", deb_file, extract_dir])
 
+def usage():
+    print("Usage: python script.py [-a] <version_number>")
+    print("Options:")
+    print("  -a\t\tSpecify the architecture")
 
 def main():
-    version_number = sys.argv[1] if len(sys.argv) > 1 else input("Enter the version number (e.g., 2.34): ")
-    arch_base = get_architecture()
-    if not arch_base:
-        print("[-] \033[91mUnsupported architecture.\033[0m")
+    if len(sys.argv) == 1:
+        usage()
         return
+    elif len(sys.argv) == 2 and sys.argv[1] == '-a':
+        usage()
+        return
+    elif len(sys.argv) == 3 and sys.argv[1] == '-a':
+        arch_base = sys.argv[2]
+        version_number = input("Enter the version number (e.g., 2.34): ")
+    else:
+        arch_base = get_architecture()
+        if not arch_base:
+            print("[-] \033[91mUnsupported architecture.\033[0m")
+            return
+        version_number = sys.argv[1]
 
     seqnum = 0
     while seqnum < 10:
