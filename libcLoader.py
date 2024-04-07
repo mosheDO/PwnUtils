@@ -35,7 +35,7 @@ def download_file(version_number, seqnum, arch_base):
             progress_bar.update(len(data))
             file.write(data)
     progress_bar.close()
-    if total_size != 0 and progress_bar.n != total_size:
+    if total_size != 0 or progress_bar.n != total_size:
         print(f"[-] \033[91mFailed to download {filename}\033[0m")
         return None
     else:
