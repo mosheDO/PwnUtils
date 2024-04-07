@@ -1,14 +1,13 @@
 libc6 Downloader
 ================
 
-This Python script downloads the libc6 package for a specified version from the Ubuntu launchpad repository. It attempts to download the package with sequence numbers from 0 to 10 and extracts the `libc.so.6` file from the downloaded package. It also provides a progress bar during the download process.
+This Python script downloads the libc6 package for a specified version from the Ubuntu launchpad repository. it really helps for pwn challanges.
+
 
 Usage
 -----
 
 You can run the script with the following command:
-
-bashCopy code
 
 `python script.py <version_number>`
 
