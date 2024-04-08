@@ -50,10 +50,6 @@ def extract_deb(deb_file, extract_dir):
     print(f"[+] \033[92mExtracting {deb_file} to {extract_dir}...\033[0m")
     subprocess.run(["dpkg", "-x", deb_file, extract_dir])
 
-def usage():
-    print("Usage: python script.py [-a] <version_number>")
-    print("Options:")
-    print("  -a\t\tSpecify the architecture")
 
 def main():
     parser = argparse.ArgumentParser(description='Download libc6 package for a specified version from the Ubuntu launchpad repository.')
