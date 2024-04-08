@@ -11,6 +11,8 @@ from tqdm import tqdm
 import argparse
 
 
+ARCH_LIST = ['amd64', 'i386']
+
 def get_architecture():
     machine = platform.machine()
     if machine == "x86_64":
@@ -54,7 +56,7 @@ def extract_deb(deb_file, extract_dir):
 def main():
     parser = argparse.ArgumentParser(description='Download libc6 package for a specified version from the Ubuntu launchpad repository.')
     parser.add_argument('version_number', metavar='VERSION', type=str, nargs='?', help='The version number of the libc6 package')
-    parser.add_argument('-a', '--auto-arch', action='store_true', help='The architecture of the libc6 package. If not provided,  Resolve architecture automatically.')
+    parser.add_argument('-a', '--arch',  type=str, nargs='?', help='The architecture of the libc6 package. If not provided,  Resolve architecture automatically.')
     
     args = parser.parse_args()
     
@@ -62,15 +64,15 @@ def main():
         parser.print_help()
         return
 
-    if args.auto_arch:
+    if args.arch and args.arch not in ARCH_LIST:
         arch_base = input("Enter the architecture (e.g., amd64, i386): ")
-        if arch_base not in ['amd64', 'i386']:
+        if arch_base not in ARCH_LIST:
             print("[-] \033[91mUnsupported architecture. Supported architectures are: amd64, i386\033[0m")
             return
     else:
         arch_base = get_architecture()
         if not arch_base:
-            print("[-] \033[91mUnsupported architecture. Supported architectures are: amd64, i386\033[0m")
+            print("[-] \033[91mUnsupported architecture. Supported architectures are: ARCH_LIST\033[0m")
             return
 
     seqnum = 0
