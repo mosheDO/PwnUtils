@@ -12,6 +12,9 @@ import argparse
 
 
 ARCH_LIST = ['amd64', 'i386']
+LIBC_LOCATION = "lib/x86_64-linux-gnu/libc.so.6"
+URL_TEMPLATE = "https://launchpad.net/ubuntu/+archive/primary/+files/libc6_{version}-0ubuntu{seqnum}_{arch_base}.deb"
+
 
 def get_architecture():
     machine = platform.machine()
@@ -25,7 +28,7 @@ def get_architecture():
 
 
 def download_file(version_number, seqnum, arch_base):
-    url = f"https://launchpad.net/ubuntu/+archive/primary/+files/libc6_{version_number}-0ubuntu{seqnum}_{arch_base}.deb"
+    url = URL_TEMPLATE.format(version=version_number, seqnum=seqnum, arch_base=arch_base)
     filename = f"libc6_{version_number}-0ubuntu{seqnum}_{arch_base}.deb"
     print(f"[+] \033[92mDownloading {filename}...\033[0m")
     response = requests.get(url, stream=True)
@@ -81,7 +84,7 @@ def main():
         if deb_file:
             with tempfile.TemporaryDirectory() as tmp_dir:
                 extract_deb(deb_file, tmp_dir)
-                libc_so_file = os.path.join(tmp_dir, "lib/x86_64-linux-gnu/libc.so.6")
+                libc_so_file = os.path.join(tmp_dir, LIBC_LOCATION)
                 if os.path.exists(libc_so_file):
                     shutil.copy(libc_so_file, ".")
                     print("[+] \033[92mCopied libc.so.6 to current directory\033[0m")
