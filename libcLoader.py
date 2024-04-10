@@ -72,7 +72,7 @@ def main():
     parser = argparse.ArgumentParser(description='Download libc6 package for a specified version from the Ubuntu launchpad repository.')
     parser.add_argument('version_number', metavar='VERSION', type=str, nargs='?', help='The version number of the libc6 package')
     parser.add_argument('-a', '--arch',  type=str, nargs='?', help='The architecture of the libc6 package. If not provided,  Resolve architecture automatically.')
-    parser.add_argument('-b', '--binary', type=str, help='Path to the binary file. Used to pwninit (if needed)')
+    parser.add_argument('-b', '--binary', type=str, help='Path to the binary file. Used for pwninit (if needed)')
 
     args = parser.parse_args()
     
