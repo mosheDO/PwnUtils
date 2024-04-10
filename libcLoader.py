@@ -57,16 +57,30 @@ def extract_deb(deb_file, extract_dir):
     subprocess.run(["dpkg", "-x", deb_file, extract_dir])
 
 
-def call_pwninit(bin_path, libc_path, ld_path=None):
-    command = ["pwninit", "--bin", bin_path, "--libc", libc_path]
-    if ld_path:
-        command.extend(["--ld", ld_path])
-    result = subprocess.run(command, capture_output=True, text=True)
-    if result.returncode == 0:
-        print("[+] \033[92mpwninit ran successfully! Ready to pwn!\033[0m")
-    else:
-        print("[-] \033[91mpwninit failed to run.\033[0m")
+# def call_pwninit(bin_path, libc_path, ld_path=None):
+#     command = ["pwninit", "--bin", bin_path, "--libc", libc_path]
+#     if ld_path:
+#         command.extend(["--ld", ld_path])
+#     result = subprocess.run(command, capture_output=True, text=True)
+#     if result.returncode == 0:
+#         print("[+] \033[92mpwninit ran successfully! Ready to pwn!\033[0m")
+#     else:
+#         print("[-] \033[91mpwninit failed to run.\033[0m")
 
+
+def call_pwninit(bin_path, libc_path, ld_path=None):
+    context.log_level = 'INFO'  # Set log level to print output
+
+    command = f"pwninit --bin {bin_path} --libc {libc_path}"
+    if ld_path:
+        command += f" --ld {ld_path}"
+    
+    # Run the pwninit command
+    p = process(command, shell=True)
+    p.recvall()  # Receive all output from the process
+    p.close()
+
+    print("[+] \033[92mpwninit ran successfully! Ready to pwn!\033[0m")
 
 def main():
     parser = argparse.ArgumentParser(description='Download libc6 package for a specified version from the Ubuntu launchpad repository.')
