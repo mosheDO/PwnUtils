@@ -4,9 +4,9 @@ import os
 import sys
 import platform
 import requests
-import subprocess
 import shutil
 import tempfile
+from pwn import *
 from tqdm import tqdm
 import argparse
 
@@ -77,10 +77,13 @@ def call_pwninit(bin_path, libc_path, ld_path=None):
     
     # Run the pwninit command
     p = process(command, shell=True)
-    p.recvall()  # Receive all output from the process
+    while p.can_recv():
+        output = p.recv().decode()
+        print(output, end='')  # Print without adding newline    p.recvall()  # Receive all output from the process
     p.close()
 
     print("[+] \033[92mpwninit ran successfully! Ready to pwn!\033[0m")
+
 
 def main():
     parser = argparse.ArgumentParser(description='Download libc6 package for a specified version from the Ubuntu launchpad repository.')
@@ -123,7 +126,7 @@ def main():
                 break
         seqnum += 1
     if args.binary:
-        print(f"[+] \033[92mUsing pwninit with binary: {args.binary}, and downloaded libc'\033[0m")
+        print(f"[+] \033[92mUsing pwninit with binary: '{args.binary}', and downloaded libc\033[0m")
         # Assuming LIBC_NAME is defined somewhere
         if os.path.exists(LIBC_NAME) and os.path.exists(args.binary):
             call_pwninit(bin_path=args.binary, libc_path=LIBC_NAME)
