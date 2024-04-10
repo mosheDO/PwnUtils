@@ -32,6 +32,7 @@ def download_file(version_number, seqnum, arch_base):
     url = URL_TEMPLATE.format(version=version_number, seqnum=seqnum, arch_base=arch_base)
     filename = f"libc6_{version_number}-0ubuntu{seqnum}_{arch_base}.deb"
     print(f"[+] \033[92mDownloading {filename}...\033[0m")
+    sleep(1)
     response = requests.get(url, stream=True)
     total_size = int(response.headers.get('content-length', 0))
     if total_size < 1024 * 1024:  # Check if file size is below 1 MB
@@ -77,10 +78,13 @@ def call_pwninit(bin_path, libc_path, ld_path=None):
     
     # Run the pwninit command
     p = process(command, shell=True)
-    while p.can_recv():
-        output = p.recv().decode()
-        print(output, end='')  # Print without adding newline    p.recvall()  # Receive all output from the process
-    p.close()
+    try:
+        while p.can_recv(timeout=2):
+            sleep(1)
+            if p.can_recv():
+                success(p.recv())  # Receive all output from the process
+    except EOFError:
+        p.close()
 
     print("[+] \033[92mpwninit ran successfully! Ready to pwn!\033[0m")
 
@@ -119,6 +123,7 @@ def main():
                 if os.path.exists(libc_so_file):
                     shutil.copy(libc_so_file, ".")
                     print("[+] \033[92mCopied libc.so.6 to current directory\033[0m")
+                    sleep(1)
                 else:
                     print("[-] \033[93mlibc.so.6 not found\033[0m in extracted files")
                 os.remove(deb_file)
