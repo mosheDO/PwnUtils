@@ -80,6 +80,7 @@ def main():
 
     seqnum = 0
     while seqnum < 10:
+        print("[+] \033[92mDownloading the file and verifying its integrity...\033[0m")
         deb_file = download_file(args.version_number, seqnum, arch_base)
         if deb_file:
             with tempfile.TemporaryDirectory() as tmp_dir:
