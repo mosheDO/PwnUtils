@@ -78,16 +78,22 @@ def call_pwninit(bin_path, libc_path, ld_path=None):
         command += f" --ld {ld_path}"
     
     # Run the pwninit command
-    p = process(command, shell=True)
-    try:
-        while p.can_recv(timeout=2):
-            sleep(1)
-            if p.can_recv():
-                success(p.recv())  # Receive all output from the process
-    except EOFError:
-        p.close()
 
-    print("[+] \033[92mpwninit ran successfully! Ready to pwn!\033[0m")
+  with process(command, shell=True) as p:
+    try:
+        while True:
+            if p.can_recv(timeout=1):
+                out = p.recv()
+                success(p.recv())  # Receive all output from the process
+                
+                if 'writing solve.py' in out:
+                    print("[+] \033[92mpwninit ran successfully! Ready to pwn!\033[0m")
+                    log.success("Downloaded solve.py successfully")
+                    break
+                else:
+                    print(out, end='')
+    except EOFError:
+        pass
 
 
 def download_solve_script(url):
