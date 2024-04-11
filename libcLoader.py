@@ -15,6 +15,7 @@ ARCH_LIST = ['amd64', 'i386']
 LIBC_NAME = "libc.so.6"
 LIBC_LOCATION = "lib/x86_64-linux-gnu/libc.so.6"
 URL_TEMPLATE = "https://launchpad.net/ubuntu/+archive/primary/+files/libc6_{version}-0ubuntu{seqnum}_{arch_base}.deb"
+URL_SOLVE_SCRIPT = "https://raw.githubusercontent.com/mosheDO/LibcForPwn/master/solve.py"
 
 
 def get_architecture():
@@ -89,6 +90,16 @@ def call_pwninit(bin_path, libc_path, ld_path=None):
     print("[+] \033[92mpwninit ran successfully! Ready to pwn!\033[0m")
 
 
+def download_solve_script(url):
+    response = requests.get(url)
+    if response.status_code == 200:
+        with open("solve.py", "wb") as file:
+            file.write(response.content)
+        print("[+] \033[92mDownloaded solve.py successfully\033[0m")
+    else:
+        print("[-] \033[91mFailed to download solve.py\033[0m")
+
+
 def main():
     parser = argparse.ArgumentParser(description='Download libc6 package for a specified version from the Ubuntu launchpad repository.')
     parser.add_argument('version_number', metavar='VERSION', type=str, nargs='?', help='The version number of the libc6 package')
@@ -139,6 +150,7 @@ def main():
             print(f"[-] \033[91mError: {LIBC_NAME} does not exist\033[0m")
     else:
         print("[-] \033[93mNo binary file provided. Use -b/--binary to specify the binary file path\033[0m")
+    download_solve_script(URL_SOLVE_SCRIPT)
 
 
 if __name__ == "__main__":
