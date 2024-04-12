@@ -15,7 +15,7 @@ ARCH_LIST = ['amd64', 'i386']
 LIBC_NAME = "libc.so.6"
 LIBC_LOCATION = "lib/x86_64-linux-gnu/libc.so.6"
 URL_TEMPLATE = "https://launchpad.net/ubuntu/+archive/primary/+files/libc6_{version}-0ubuntu{seqnum}_{arch_base}.deb"
-URL_SOLVE_SCRIPT = "https://raw.githubusercontent.com/mosheDO/LibcForPwn/master/solve.py"
+URL_SOLVE_SCRIPT = "https://raw.githubusercontent.com/mosheDO/PwnUtils/master/solve.py"
 
 
 def get_architecture():
