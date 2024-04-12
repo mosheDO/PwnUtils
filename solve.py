@@ -287,7 +287,7 @@ def add_waits_test(io):
 
 def FMT():
     autofmt = FmtStr(exec_fmt)
-    success("[Guessed] Offset in stack is: {0} numbwitten is {1} and padlen is {2}".format(autofmt.offset, autofmt.numbwitten, autofmt.padlen))
+    success("[Guessed] Offset in stack is: {0} numbwitten is {1} and padlen is {2}".format(autofmt.offset, autofmt.numbwritten, autofmt.padlen))
     quit()
     
     
