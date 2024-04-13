@@ -111,9 +111,13 @@ def main():
     parser.add_argument('version_number', metavar='VERSION', type=str, nargs='?', help='The version number of the libc6 package')
     parser.add_argument('-a', '--arch',  type=str, nargs='?', help='The architecture of the libc6 package. If not provided,  Resolve architecture automatically.')
     parser.add_argument('-b', '--binary', type=str, help='Path to the binary file. Used for pwninit (if needed)')
+    parser.add_argument('-s', '--script', type=str, help='Download solve script and exist immediately')
 
     args = parser.parse_args()
-    
+
+    if arfs.script:
+        download_solve_script(URL_SOLVE_SCRIPT)
+        
     if args.version_number is None or args.version_number == '-h':
         parser.print_help()
         return
