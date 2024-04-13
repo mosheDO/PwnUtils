@@ -213,6 +213,9 @@ def FMT_PAYLOAD():
     #   write_size (str) – must be byte, short or int. Tells if you want to write byte by byte, short by short or int by int (hhn, hn or n)
     #   (int will be diffcult in remote server because a lot of write is needed)
     payload = fmtstr_payload(1, {0x0: 0x1337babe}, numbwritten=0, write_size='byte')
+    print ('#########################')
+    print ('Generating FMT_PAYLOAD: {}'.format(payload))
+    hexdump(payload)
     return payload
 
         
