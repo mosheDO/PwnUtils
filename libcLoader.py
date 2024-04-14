@@ -17,6 +17,8 @@ LIBC_LOCATION = "lib/x86_64-linux-gnu/libc.so.6"
 URL_TEMPLATE = "https://launchpad.net/ubuntu/+archive/primary/+files/libc6_{version}-0ubuntu{seqnum}_{arch_base}.deb"
 URL_SOLVE_SCRIPT = "https://raw.githubusercontent.com/mosheDO/PwnUtils/master/solve.py"
 URL_SCRIPT = "https://raw.githubusercontent.com/mosheDO/PwnUtils/master/libcLoader.py"
+GITHUB_OENER = "moshedo"
+REPO = "pwnutils"
 
 
 def get_architecture():
@@ -107,23 +109,22 @@ def download_solve_script(url):
         print("[-] \033[91mFailed to download solve.py\033[0m")
 
 
-def update_script(url):
-    # Get the directory of the current script
+def update_script(owner, repo, file_name, save_as):
+    url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_name}"
     script_dir = os.path.dirname(os.path.abspath(__file__))
     
-    # Get the filename from the URL
-    filename = url.split('/')[-1]
-    
-    # Download the file
     response = requests.get(url)
     if response.status_code == 200:
-        file_path = os.path.join(script_dir, filename)
-        with open(file_path, 'wb') as file:
-            file.write(response.content)
-        
-        # Set executable permission
-        os.chmod(file_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
-        print(f"Updated script '{filename}' downloaded and set as executable.")
+        content = response.json()
+        download_url = content['download_url']
+        file_response = requests.get(download_url)
+        if file_response.status_code == 200:
+            file_path = os.path.join(script_dir, filename)
+            with open(file_path, 'wb') as file:
+                file.write(file_response.content)
+            print(f"File downloaded successfully as '{file_name}'")
+            os.chmod(file_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
+            print(f"Updated script '{filename}' downloaded and set as executable.")
     else:
         print("Failed to download the updated script.")
 
@@ -138,7 +139,7 @@ def main():
 
     args = parser.parse_args()
     if args.update:
-        update_script(URL_SCRIPT)
+        update_script(GITHUB_OENER, REPO,  os.path.basename(__file__))
         return
 
     if args.script:
