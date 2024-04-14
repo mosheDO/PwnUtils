@@ -13,7 +13,9 @@ import argparse
 
 ARCH_LIST = ['amd64', 'i386']
 LIBC_NAME = "libc.so.6"
-LIBC_LOCATION = "lib/x86_64-linux-gnu/libc.so.6"
+LIBC_LOCATION = ""
+LIBC_LOCATION_AMD64 = "lib/x86_64-linux-gnu/libc.so.6"
+LIBC_LOCATION_I386 = "lib/i386-linux-gnu/libc.so.6"
 URL_TEMPLATE = "https://launchpad.net/ubuntu/+archive/primary/+files/libc6_{version}-0ubuntu{seqnum}_{arch_base}.deb"
 URL_SOLVE_SCRIPT = "https://raw.githubusercontent.com/mosheDO/PwnUtils/master/solve.py"
 URL_SCRIPT = "https://raw.githubusercontent.com/mosheDO/PwnUtils/master/libcLoader.py"
@@ -22,12 +24,14 @@ REPO = "pwnutils"
 
 
 def get_architecture(binary):
-    if binary:
-        return ELF(binary, checksec=False).get_machine_arch()
     machine = platform.machine()
+    if binary:
+        machine = ELF(binary, checksec=False).get_machine_arch()
     if machine == "x86_64":
+        LIBC_LOCATION = LIBC_LOCATION_AMD64
         return "amd64"
     elif machine == "i386":
+        LIBC_LOCATION = LIBC_LOCATION_I386
         return "i386"
     else:
         # Add more cases as needed for other architectures
