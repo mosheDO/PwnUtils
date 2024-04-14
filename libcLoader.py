@@ -21,7 +21,9 @@ GITHUB_OENER = "moshedo"
 REPO = "pwnutils"
 
 
-def get_architecture():
+def get_architecture(binary):
+    if binary:
+        return ELF(binary, checksec=False).get_machine_arch()
     machine = platform.machine()
     if machine == "x86_64":
         return "amd64"
@@ -156,10 +158,11 @@ def main():
             print("[-] \033[91mUnsupported architecture. Supported architectures are: amd64, i386\033[0m")
             return
     else:
-        arch_base = get_architecture()
+        arch_base = get_architecture(args.binary)
         if not arch_base:
             print("[-] \033[91mUnsupported architecture. Supported architectures are: ARCH_LIST\033[0m")
             return
+
 
     seqnum = 0
     while seqnum < 10:
