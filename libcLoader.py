@@ -122,7 +122,7 @@ def update_script(url):
             file.write(response.content)
         
         # Set executable permission
-        os.chmod(file_path, stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        os.chmod(file_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
         print(f"Updated script '{filename}' downloaded and set as executable.")
     else:
         print("Failed to download the updated script.")
@@ -134,7 +134,7 @@ def main():
     parser.add_argument('-a', '--arch',  type=str, nargs='?', help='The architecture of the libc6 package. If not provided,  Resolve architecture automatically.')
     parser.add_argument('-b', '--binary', type=str, help='Path to the binary file. Used for pwninit (if needed)')
     parser.add_argument('-s', '--script', type=str, help='Download solve script and exist immediately')
-    parser.add_argument('-u', '--update', type=str, help='Update the libcLoader file.')
+    parser.add_argument('-u', '--update', action='store_true', help='Update the script if specified.')
 
     args = parser.parse_args()
     if args.update:
