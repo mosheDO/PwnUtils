@@ -37,7 +37,7 @@ def get_architecture(binary):
 def download_file(version_number, seqnum, arch_base):
     url = URL_TEMPLATE.format(version=version_number, seqnum=seqnum, arch_base=arch_base)
     filename = f"libc6_{version_number}-0ubuntu{seqnum}_{arch_base}.deb"
-    print(f"[+] \033[92mDownloading {filename}...\033[0m")
+    print(f"[+] \033[92mDownloading {filename} from {url}...\033[0m")
     sleep(1)
     response = requests.get(url, stream=True)
     total_size = int(response.headers.get('content-length', 0))
