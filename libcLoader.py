@@ -122,11 +122,11 @@ def update_script(owner, repo, file_name):
             file_path = os.path.join(script_dir, file_name)
             with open(file_path, 'wb') as file:
                 file.write(file_response.content)
-            print(f"File downloaded successfully as '{file_name}'")
+            print(f"[+] \033[92mFile downloaded successfully as '{file_name}'\033[0m")
             os.chmod(file_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
-            print(f"Updated script '{file_name}' downloaded and set as executable.")
+            print(f"[+] \033[92mUpdated script '{file_name}' downloaded and set as executable.\033[0m")
     else:
-        print("Failed to download the updated script.")
+        print("[-] \033[91mFailed to download the updated script.\033[0m")
 
 
 def main():
