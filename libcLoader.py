@@ -122,7 +122,7 @@ def update_script(url):
             file.write(response.content)
         
         # Set executable permission
-        os.chmod(file_path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+        os.chmod(file_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH)
         print(f"Updated script '{filename}' downloaded and set as executable.")
     else:
         print("Failed to download the updated script.")
