@@ -24,6 +24,7 @@ REPO = "pwnutils"
 
 
 def get_architecture(binary):
+    global LIBC_LOCATION
     machine = platform.machine()
     if binary:
         machine = ELF(binary, checksec=False).get_machine_arch()
