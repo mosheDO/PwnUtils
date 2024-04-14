@@ -139,9 +139,11 @@ def main():
     args = parser.parse_args()
     if args.update:
         update_script(URL_SCRIPT)
+        return
 
     if args.script:
         download_solve_script(URL_SOLVE_SCRIPT)
+        return
         
     if args.version_number is None or args.version_number == '-h':
         parser.print_help()
