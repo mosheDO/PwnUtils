@@ -16,6 +16,7 @@ LIBC_NAME = "libc.so.6"
 LIBC_LOCATION = "lib/x86_64-linux-gnu/libc.so.6"
 URL_TEMPLATE = "https://launchpad.net/ubuntu/+archive/primary/+files/libc6_{version}-0ubuntu{seqnum}_{arch_base}.deb"
 URL_SOLVE_SCRIPT = "https://raw.githubusercontent.com/mosheDO/PwnUtils/master/solve.py"
+URL_SCRIPT = "https://raw.githubusercontent.com/mosheDO/PwnUtils/master/libcLoader.py"
 
 
 def get_architecture():
@@ -106,14 +107,38 @@ def download_solve_script(url):
         print("[-] \033[91mFailed to download solve.py\033[0m")
 
 
+def update_script(url):
+    # Get the directory of the current script
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    # Get the filename from the URL
+    filename = url.split('/')[-1]
+    
+    # Download the file
+    response = requests.get(url)
+    if response.status_code == 200:
+        file_path = os.path.join(script_dir, filename)
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
+        
+        # Set executable permission
+        os.chmod(file_path, stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+        print(f"Updated script '{filename}' downloaded and set as executable.")
+    else:
+        print("Failed to download the updated script.")
+
+
 def main():
     parser = argparse.ArgumentParser(description='Download libc6 package for a specified version from the Ubuntu launchpad repository.')
     parser.add_argument('version_number', metavar='VERSION', type=str, nargs='?', help='The version number of the libc6 package')
     parser.add_argument('-a', '--arch',  type=str, nargs='?', help='The architecture of the libc6 package. If not provided,  Resolve architecture automatically.')
     parser.add_argument('-b', '--binary', type=str, help='Path to the binary file. Used for pwninit (if needed)')
     parser.add_argument('-s', '--script', type=str, help='Download solve script and exist immediately')
+    parser.add_argument('-u', '--update', type=str, help='Update the file.')
 
     args = parser.parse_args()
+    if arfs.update:
+        update_script(URL_SCRIPT)
 
     if arfs.script:
         download_solve_script(URL_SOLVE_SCRIPT)
