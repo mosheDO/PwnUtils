@@ -112,9 +112,6 @@ def main():
     # Save the payload to file
     write('payload', payload)
 
-    # Send the payload
-    io.sendlineafter('>', payload)
-
     add_waits_test(io)
 
     # Get our flag!
