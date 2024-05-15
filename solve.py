@@ -24,6 +24,7 @@ EXE = './vuln'
 # This will automatically get context arch, bits, os etc
 # Need to add ELF() and ROP() for this list
 ELF_FILE = context.binary = ELF(EXE, checksec=False)
+context.cyclic_size = ELF_FILE.bytes
 ELF_ROP = ROP(ELF_FILE)
 LIBC_FILE = ELF_FILE.libc
 LIBC_ROP = ''
