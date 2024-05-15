@@ -2,11 +2,14 @@
 from pwn import *
 import warnings
 from ctypes import *
+import os
+
 
 # libc = CDLL("libc.so.6")
 # libc.srand(42)
 # print(libc.rand() % 32768)
-
+def is_tmux_running():
+    return 'TMUX' in os.environ
 
 # Specify GDB script here (breakpoints etc)
 gdbscript = '''
@@ -21,6 +24,8 @@ continue
 warnings.filterwarnings(action='ignore', category=BytesWarning)
 
 EXE = './vuln'
+if is_tmux_running():
+    context.terminal = ['tmux', 'new-window']
 # This will automatically get context arch, bits, os etc
 # Need to add ELF() and ROP() for this list
 ELF_FILE = context.binary = ELF(EXE, checksec=False)
