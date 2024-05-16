@@ -149,11 +149,14 @@ def start(argv=[], *a, **kw):
 
 sa = lambda *args, **kwargs: None
 sla = lambda *args, **kwargs: None
+ru = lambda *args, **kwargs: None
 def shortcut(io):
     global sa
     sa = lambda x,y : io.sendafter(x,y)
     global sla
     sla = lambda x,y : io.sendlineafter(x,y)
+    global ru
+    ru = lambda x : io.readuntil(x)
 
 def GENERATE_SHELLCODE():
     # Example for shellcode in pwntools
