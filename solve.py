@@ -211,7 +211,6 @@ def get_offset_as_int(s):
 
 
 def FMT_READ(offset):
-    if 
     return f'%{offset}$0{ELF_FILE.bytes * 2}lx'
 
 
