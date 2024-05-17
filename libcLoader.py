@@ -9,7 +9,7 @@ import tempfile
 from pwn import *
 from tqdm import tqdm
 import argparse
-
+import re
 
 ARCH_LIST = ['amd64', 'i386']
 LIBC_NAME = "libc.so.6"
@@ -80,6 +80,19 @@ def extract_deb(deb_file, extract_dir):
 #         print("[-] \033[91mpwninit failed to run.\033[0m")
 
 
+def check_glibc_version_in_binary(binary_path):
+    try:
+        p = process(binary_path)
+        output = p.recvall().decode()
+        p.close()
+        match = re.search(r"version `GLIBC_[\d.]+' not found", output)
+        if match:
+            version = match.group(0).split("version `GLIBC_")[1].split("'")[0]
+            return version
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
 def call_pwninit(bin_path, libc_path, ld_path=None):
     context.log_level = 'INFO'  # Set log level to print output
 
@@ -143,6 +156,7 @@ def main():
     parser.add_argument('-b', '--binary', type=str, help='Path to the binary file. Used for pwninit (if needed)')
     parser.add_argument('-s', '--script', action='store_true', help='Download solve script and exist immediately')
     parser.add_argument('-u', '--update', action='store_true', help='Update this script if specified.')
+    parser.add_argument('-au', '--auto', action='store_true', help='auto detect the glibc version.')
 
     args = parser.parse_args()
     if args.update:
@@ -153,6 +167,12 @@ def main():
         download_solve_script(URL_SOLVE_SCRIPT)
         return
         
+    if args.auto:
+        glibc_version = check_glibc_version_in_binary(args.binary)
+        if glibc_version:
+            print(f"GLIBC version detetct auto 'GLIBC_{glibc_version}' not found.")
+            args.version_number = glibc_version
+
     if args.version_number is None or args.version_number == '-h':
         parser.print_help()
         return
