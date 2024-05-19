@@ -182,11 +182,13 @@ def main():
         if arch_base not in ARCH_LIST:
             print("[-] \033[91mUnsupported architecture. Supported architectures are: amd64, i386\033[0m")
             return
-    else:
+    elif not args.arch:
         arch_base = get_architecture(args.binary)
         if not arch_base:
             print("[-] \033[91mUnsupported architecture. Supported architectures are: ARCH_LIST\033[0m")
             return
+    else:
+        arch_base = args.arch
 
 
     seqnum = 0
@@ -198,7 +200,7 @@ def main():
                 extract_deb(deb_file, tmp_dir)
                 libc_so_file = os.path.join(tmp_dir, LIBC_LOCATION)
                 if os.path.exists(libc_so_file):
-                    shutil.copy(libc_so_file, ".")
+                    shutil.copy(libc_so_file + LIBC_LOCATION_AMD64, ".")
                     print("[+] \033[92mCopied libc.so.6 to current directory\033[0m")
                     sleep(1)
                 else:
