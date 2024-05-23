@@ -1,6 +1,10 @@
 source /home/ubuntu/pwndbg/gdbinit.py
 source /home/ubuntu/splitmind/gdbinit.py
 
+#git clone https://github.com/mosheDO/splitmind
+#echo "source $PWD/splitmind/gdbinit.py" >> ~/.gdbinit
+
+
 set context-clear-screen on
 set follow-fork-mode parent
 set show-flags on
