@@ -316,5 +316,13 @@ def exec_fmt(payload):
     return p.recvall()
 
 
+def float_to_addr(n: float):
+    return struct.unpack("<Q", struct.pack("d", n))[0]
+
+
+def addr_to_float(addr: int):
+    return str(struct.unpack("d", struct.pack("<Q", addr))[0]).encode()
+
+
 if __name__ == "__main__":
     main()    
