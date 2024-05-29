@@ -97,6 +97,7 @@ def main():
         ]
     })
     shellcode = GENERATE_SHELLCODE()
+    # import IPython; IPython.embed()
     # libc_base = puts_leak - libc.symbols["puts"]
 
     if args.FMT_READ:
