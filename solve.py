@@ -153,11 +153,11 @@ sl = lambda *args, **kwargs: None
 ru = lambda *args, **kwargs: None
 def shortcut(io):
     global sa
-    sa = lambda x,y : io.sendafter(x,y)
+    sa = lambda x,y : io.sendafter(x, str(y))
     global sla
-    sla = lambda x,y : io.sendlineafter(x,y)
+    sla = lambda x,y : io.sendlineafter(x, str(y))
     global sl
-    sl = lambda x : io.sendline(x)
+    sl = lambda x : io.sendline(str(x))
     global ru
     ru = lambda x : io.readuntil(x)
 
