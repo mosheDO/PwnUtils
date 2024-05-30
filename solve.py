@@ -164,6 +164,7 @@ def shortcut(io):
 
 def GENERATE_SHELLCODE():
     # Example for shellcode in pwntools
+    # asm(shellcraft.chmod('/flag', 0x1ff)) 777 in octal
     # int.from_bytes(asm('call $-0xCD'), byteorder='little') #for indirect jumps or calls
     # When we want to asm jmp 0xdeadbeaf, we can use jmp [rip+offset].
     # When we want to asm jne 0xdeadbeaf, we can use position: mov eax; jne position.
