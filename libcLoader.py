@@ -28,7 +28,7 @@ def get_architecture(binary):
     machine = platform.machine()
     if binary:
         machine = ELF(binary, checksec=False).get_machine_arch()
-    if machine == "x86_64":
+    if machine == "x86_64" || machine == 'amd64':
         LIBC_LOCATION = LIBC_LOCATION_AMD64
         return "amd64"
     elif machine == "i386":
