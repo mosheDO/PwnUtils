@@ -217,8 +217,9 @@ def main():
 
     if args.binary:
         # Example usage
+        logger(f"Extracting glibc version number from binary: {version_number}")
         version_number = get_glibc_version(args.binary)
-        logger(f"Extracted version number: {version_number}")
+        logger(f"Extracted glibc version: {version_number}")
         args.version_number = version_number
         
     # if args.auto:
