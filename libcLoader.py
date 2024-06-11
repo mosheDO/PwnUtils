@@ -79,6 +79,40 @@ def extract_deb(deb_file, extract_dir):
 #     else:
 #         print("[-] \033[91mpwninit failed to run.\033[0m")
 
+from pwn import process
+import re
+
+def get_glibc_version(executable_path):
+    """
+    Opens a process, captures its output, and extracts the GLIBC version number.
+
+    Args:
+    executable_path (str): Path to the executable to run.
+
+    Returns:
+    str: Extracted GLIBC version number or an error message if not found.
+    """
+    try:
+        # Start the process
+        p = process(executable_path)
+
+        # Interact with the process to get the desired output
+        output = p.recvall().decode()
+
+        # Close the process
+        p.close()
+
+        # Extract the version number from the output using regular expressions
+        match = re.search(r"GLIBC_(\d+\.\d+)", output)
+        if match:
+            return match.group(1)
+        else:
+            return "Version number not found in the output."
+
+    except Exception as e:
+        return f"An error occurred: {e}"
+
+
 
 def check_glibc_version_in_binary(binary_path):
     try:
@@ -129,6 +163,20 @@ def download_solve_script(url):
         print("[-] \033[91mFailed to download solve.py\033[0m")
 
 
+def logger(message: str, success: bool = True) -> None:
+    """
+    Logs a message with specific formatting for success and failure.
+
+    Args:
+    message (str): The message to log.
+    success (bool): If True, logs as a success message; if False, logs as a failure message.
+    """
+    if success:
+        print(f"[+] \033[92m{message}\033[0m")
+    else:
+        print(f"[-] \033[93m{message}\033[0m")
+
+
 def update_script(owner, repo, file_name):
     url = f"https://api.github.com/repos/{owner}/{repo}/contents/{file_name}"
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -166,6 +214,12 @@ def main():
     if args.script:
         download_solve_script(URL_SOLVE_SCRIPT)
         return
+
+    if args.script:
+        # Example usage
+        version_number = get_glibc_version(executable_path)
+        logger(f"Extracted version number: {version_number}")
+        args.version_number = version_number
         
     if args.auto:
         glibc_version = check_glibc_version_in_binary(args.binary)
