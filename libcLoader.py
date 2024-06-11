@@ -114,17 +114,17 @@ def get_glibc_version(executable_path):
 
 
 
-def check_glibc_version_in_binary(binary_path):
-    try:
-        p = process(binary_path)
-        output = p.recvall().decode()
-        p.close()
-        match = re.search(r"version `GLIBC_[\d.]+' not found", output)
-        if match:
-            version = match.group(0).split("version `GLIBC_")[1].split("'")[0]
-            return version
-    except Exception as e:
-        print(f"An error occurred: {e}")
+# def check_glibc_version_in_binary(binary_path):
+#     try:
+#         p = process(binary_path)
+#         output = p.recvall().decode()
+#         p.close()
+#         match = re.search(r"version `GLIBC_[\d.]+' not found", output)
+#         if match:
+#             version = match.group(0).split("version `GLIBC_")[1].split("'")[0]
+#             return version
+#     except Exception as e:
+#         print(f"An error occurred: {e}")
 
 
 def call_pwninit(bin_path, libc_path, ld_path=None):
@@ -215,17 +215,17 @@ def main():
         download_solve_script(URL_SOLVE_SCRIPT)
         return
 
-    if args.script:
+    if args.binary:
         # Example usage
-        version_number = get_glibc_version(executable_path)
+        version_number = get_glibc_version(args.binary)
         logger(f"Extracted version number: {version_number}")
         args.version_number = version_number
         
     if args.auto:
-        glibc_version = check_glibc_version_in_binary(args.binary)
-        if glibc_version:
-            print(f"GLIBC version detetct auto 'GLIBC_{glibc_version}' not found.")
-            args.version_number = glibc_version
+        # glibc_version = check_glibc_version_in_binary(args.binary)
+        # if glibc_version:
+        #     print(f"GLIBC version detetct auto 'GLIBC_{glibc_version}' not found.")
+        #     args.version_number = glibc_version
 
     if args.version_number is None or args.version_number == '-h':
         parser.print_help()
