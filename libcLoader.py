@@ -221,7 +221,7 @@ def main():
         logger(f"Extracted version number: {version_number}")
         args.version_number = version_number
         
-    if args.auto:
+    # if args.auto:
         # glibc_version = check_glibc_version_in_binary(args.binary)
         # if glibc_version:
         #     print(f"GLIBC version detetct auto 'GLIBC_{glibc_version}' not found.")
