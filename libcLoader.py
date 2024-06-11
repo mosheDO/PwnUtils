@@ -28,12 +28,12 @@ def get_architecture(binary):
     machine = platform.machine()
     if binary:
         machine = ELF(binary, checksec=False).get_machine_arch()
-    if machine == "x86_64" || machine == 'amd64':
+    if machine == "x86_64" or machine == 'amd64':
         LIBC_LOCATION = LIBC_LOCATION_AMD64
-        return "amd64"
+        return ARCH_LIST[0]
     elif machine == "i386":
         LIBC_LOCATION = LIBC_LOCATION_I386
-        return "i386"
+        return ARCH_LIST[1]
     else:
         # Add more cases as needed for other architectures
         return None
