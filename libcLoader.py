@@ -156,9 +156,16 @@ def call_pwninit(bin_path, libc_path, ld_path=None):
 def download_solve_script(url):
     response = requests.get(url)
     if response.status_code == 200:
-        with open("solve.py", "wb") as file:
+        file_path = "solve.py"
+        with open(file_path, "wb") as file:
             file.write(response.content)
         print("[+] \033[92mDownloaded solve.py successfully\033[0m")
+        # Define the permissions (in octal notation, for example: 0o755)
+        # 0o755 means owner has read, write, and execute permissions, and others have read and execute permissions
+        permissions = 0o755
+
+        # Change the file permissions
+        os.chmod(file_path, permissions)
     else:
         print("[-] \033[91mFailed to download solve.py\033[0m")
 
