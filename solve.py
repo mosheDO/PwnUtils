@@ -326,5 +326,27 @@ def addr_to_float(addr: int):
     return str(struct.unpack("d", struct.pack("<Q", addr))[0]).encode()
 
 
+def from_stackdump_to_string(hex_string: str) -> str:
+    """
+    Converts a hexadecimal string into a little-endian byte representation.
+
+    Args:
+    - hex_string (str): Hexadecimal string to convert.
+
+    Returns:
+    - str: Little-endian byte representation of the hexadecimal string.
+    """
+    # Example: hex_string = '68656c6c6f20776f726c64'
+    
+    # Convert hexadecimal string to bytes
+    hex_bytes = bytes.fromhex(hex_string)
+    
+    # Reverse the order of bytes to convert to little-endian format
+    little_endian_bytes = hex_bytes[::-1]
+    
+    # Return the little-endian bytes as a string representation
+    return little_endian_bytes.decode('utf-8')  # Decode bytes to string
+
+
 if __name__ == "__main__":
     main()    
