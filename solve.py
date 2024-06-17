@@ -326,6 +326,33 @@ def addr_to_float(addr: int):
     return str(struct.unpack("d", struct.pack("<Q", addr))[0]).encode()
 
 
+def make_double(code, precision=95):
+    """
+    Converts a asm shellcode bytes into a hex code for JS shellcode while sending IEEE 754 numbers.
+    """
+    import bigfloat
+
+    hex_str = hex(u64(code.ljust(8, b"\x90")))[2:]
+    # Convert hexadecimal string to an integer
+    int_value = int(hex_str, 16)
+    # Get the sign bit (first bit, 1 bit long), exponent (next 11 bits), and fraction (remaining 52 bits)
+    sign = int_value >> 63
+    exponent = (int_value >> 52) & 0x7FF
+    fraction = int_value & 0xFFFFFFFFFFFFF
+    # Adjust exponent to represent the actual exponent value
+    if exponent == 0:
+        exponent_value = -1022  # Denormalized numbers
+    else:
+        exponent_value = exponent - 1023  # Normalized numbers
+        # Convert the fraction part to the actual fractional value
+    fraction_value = 1.0
+    for i in range(52):
+        fraction_value += ((fraction >> (51 - i)) & 1) * 2 ** (-i - 1)
+        # Calculate the final value
+    result = (-1) ** sign * fraction_value * 2**exponent_value
+    return bigfloat.BigFloat(result, context=bigfloat.precision(95))
+
+
 def from_stackdump_to_string(hex_string: str) -> str:
     """
     Converts a hexadecimal string into a little-endian byte representation.
