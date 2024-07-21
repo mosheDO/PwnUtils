@@ -15,6 +15,7 @@ def is_tmux_running():
 # Specify GDB script here (breakpoints etc)
 gdbscript = '''
 #init-pwndbg #only if we need it
+# set follow-fork-mode child
 #breakrva 0x11f #Offset for pie exectuable (delete this command when using breakrva)
 break _start
 break *main
