@@ -340,6 +340,12 @@ def float_to_addr(n: float):
 def addr_to_float(addr: int):
     return str(struct.unpack("d", struct.pack("<Q", addr))[0]).encode()
 
+def num_to_addr64(num):
+    return num & 0xffffffffffffffff
+
+def num_to_addr32(num):
+    return num & 0xffffffff
+    
 
 def make_double(code, precision=95):
     """
