@@ -1,10 +1,176 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+# from pwn import *
+
+
+# context.log_level = 'DEBUG'
+# # enum book_status{
+# #         CREATED = 0X12345,
+# #         ABANDONED = 0X67890,
+# # }
+# # ;
+# # typedef struct {
+# #         char content[BUF_SIZE];
+# #         int status;
+# # } notebook;
+
+
+
+# # int bypass_me()
+# # {
+# #         int flag = 0;
+
+# #         // notebooks[0]
+# #         if ((notebooks[0] == NULL) ||
+# #             (strcmp(notebooks[0]->content, "hello ") != 0) ||
+# #             (notebooks[0]->status != CREATED))
+# #                 return flag;
+
+# #         // notebooks[1]
+# #         if ((notebooks[1] == NULL) ||
+# #             (strcmp(notebooks[1]->content, "world,") != 0) ||
+# #             (notebooks[1]->status != ABANDONED))
+# #                 return flag;        
+
+# #         // notebooks[3]
+# #         if ((notebooks[3] == NULL) ||
+# #             (strcmp(notebooks[3]->content, "magic ") != 0) ||
+# #             (notebooks[3]->status != CREATED))
+# #                 return flag;
+
+# #         // notebooks[5]
+# #         if ((notebooks[5] == NULL) ||
+# #             (strcmp(notebooks[5]->content, "notebook") != 0) ||
+# #             (notebooks[5]->status != ABANDONED))
+# #                 return flag;
+
+# #         flag = 1;
+
+# #         return flag;
+# # }
+
+
+# # void menu()
+# # {
+# #         puts("1. Create Notebook");
+# #         puts("2. Edit   Notebook");
+# #         puts("3. Delete Notebook");
+# #         puts("4. Show   Notebook");
+# #         puts("5. Gift for You");
+# #         puts("Choice >> ");
+# # }
+
+# def create_notebook(io, index, size, content):
+#     io.sendlineafter("Choice >> ", b"1")
+#     io.sendlineafter("index:", str(index).encode())
+#     io.sendlineafter("content:", content)
+
+
+# def edit_notebook(io, index):
+#     io.sendlineafter("Choice >> ", b"2")
+#     io.sendlineafter("index:", str(index).encode())
+
+
+# def gift_for_you(io):
+#     io.sendlineafter("Choice >> ", "5")
+
+
+# def print_lines(io):
+#     info("Printing io received lines")
+#     while True:
+#         try:
+#             line = io.recvline()
+#             success(line.decode())
+#         except EOFError:
+#             break
+
+# # Set architecture, os and log level
+# context(arch="amd64", os="linux", log_level="info")
+
+# # Load the ELF file and execute it as a new process.
+# challenge_path = "/challenge/pwntools-tutorials-level3.0"
+
+# # Specify GDB script here (breakpoints etc)
+# gdbscript = '''
+# #init-pwndbg #only if we need it
+# # set follow-fork-mode child
+# #breakrva 0x11f #Offset for pie exectuable (delete this command when using breakrva)
+# break _start
+# break *main
+# #ignore 23 1000000   # set ignore count very high.  set an 'ignore count' for that breakpoint number, ignore ID count  
+# continue
+# '''.format(**locals())
+
+
+
+
+
+
+
+# def start(argv=[], *a, **kw):
+#     if args.GDB:  # Set GDBscript below
+#         return gdb.debug([context.binary.path] + argv, gdbscript=gdbscript, *a, **kw)
+#     elif args.REMOTE:  # ('server', 'port')
+# #         libc_elf = io.libc
+# #         if libc_elf:
+# #             libc_rop = ROP(libc_elf)
+#         return remote(sys.argv[1], sys.argv[2], *a, **kw)
+#     else:  # Run locally
+#         io = process([EXE] + argv, *a, **kw)
+# #        libc_elf = io.libc
+# #        if libc_elf:
+# #            libc_rop = ROP(libc_elf)
+#         return io
+
+
+
+# def main():
+#     argsparser = argparse.ArgumentParser(description="Pwntools script template")
+#     argsparser.add_argument("arg1", type=argparse.FileType("rb"), help="Binary file to use")
+
+
+#     p = start()
+#     with process([challenge_path]) as p:
+#         # Send the payload after the string "(up to 0x1000 bytes): \n" is found.
+#         create_notebook(p, 0, 20, b"hello ")
+#         create_notebook(p, 1, 20, b"world,")
+#         create_notebook(p, 3, 20, b"magic ")
+#         create_notebook(p, 5, 20, b"notebook")
+#         edit_notebook(p, 1)
+#         edit_notebook(p, 5)
+#         # gift_for_you(p)
+#         #  rax = the sum from 1 to rcx 
+
+#         p.interactive()
+
+
+
+# if main __name__ == "__main__":
+#     main()
+
+
+
 from pwn import *
 import warnings
 from ctypes import *
 import os
 import time
+import argparse
 
+
+
+def create_notebook(io, index, size, content):
+    io.sendlineafter("Choice >> ", b"1")
+    io.sendlineafter("index:", str(index).encode())
+    io.sendlineafter("content:", content + b"\x00")
+
+
+def edit_notebook(io, index):
+    io.sendlineafter("Choice >> ", b"2")
+    io.sendlineafter("index:", str(index).encode())
+
+
+def gift_for_you(io):
+    io.sendlineafter("Choice >> ", "5")
 
 # libc = CDLL("libc.so.6")
 # libc.srand(42)
@@ -18,33 +184,35 @@ gdbscript = '''
 # set follow-fork-mode child
 #breakrva 0x11f #Offset for pie exectuable (delete this command when using breakrva)
 break _start
-break *main
+break *bypass_me
 #ignore 23 1000000   # set ignore count very high.  set an 'ignore count' for that breakpoint number, ignore ID count  
 continue
 '''.format(**locals())
 
 warnings.filterwarnings(action='ignore', category=BytesWarning)
 
-EXE = './vuln'
+# if len(argv) < 2:
+#     raise Exception("Need to pass in binary name as first arg")
 if is_tmux_running():
     context.terminal = ['tmux', 'new-window']
 # This will automatically get context arch, bits, os etc
-# Need to add ELF() and ROP() for this list
-ELF_FILE = context.binary = ELF(EXE, checksec=False)
+# # Need to add ELF() and ROP() for this list
+ELF_FILE = context.binary = ELF(sys.argv[1], checksec=False)
 context.cyclic_size = ELF_FILE.bytes
 ELF_ROP = ROP(ELF_FILE)
 LIBC_FILE = ELF_FILE.libc
 LIBC_ROP = ''
 LD_FILE = ''   
-LD_ROP = ''   
+LD_ROP = ''
+
 
 def main():
-    global ELF_FILE, ELF_ROP, LIBC_FILE, LIBC_ROP, LD_FILE, LD_ROP
 
+    global ELF_FILE, ELF_ROP, LIBC_FILE, LIBC_ROP, LD_FILE, LD_ROP
     # Change logging level to help with debugging (warning/info/debug)
     #context.log_level = "INFO"
-    if args.LOG_LEVEL:
-        context.log_level = args.LOG_LEVEL
+    # if args.LOG_LEVEL:
+    #     context.log_level = args.LOG_LEVEL
 
     # loop_progress = log.progress('Brute Force')
     # flag_progress = log.progress("Flag")
@@ -55,9 +223,16 @@ def main():
     # Binary filename
 
 
+
     # Start program
     io = start()
-    shortcut(io)
+    create_notebook(io, 0, 20, b"hello ")
+    create_notebook(io, 1, 20, b"world,")
+    create_notebook(io, 3, 20, b"magic ")
+    create_notebook(io, 5, 20, b"notebook")
+    edit_notebook(io, 1)
+    edit_notebook(io, 5)
+    gift_for_you(io)
 
     # elf.get_section_by_name('.init_array').header.sh_addr     #Get the specific section address
 
@@ -139,6 +314,7 @@ def main():
         io.interactive()
     return 0
 
+
    
 # Allows you to switch between local/GDB/remote from terminal
 def start(argv=[], *a, **kw):
@@ -150,25 +326,12 @@ def start(argv=[], *a, **kw):
 #             libc_rop = ROP(libc_elf)
         return remote(sys.argv[1], sys.argv[2], *a, **kw)
     else:  # Run locally
-        io = process([EXE] + argv, *a, **kw)
+        io = process([context.binary.path] + argv, *a, **kw)
 #        libc_elf = io.libc
 #        if libc_elf:
 #            libc_rop = ROP(libc_elf)
         return io
 
-sa = lambda *args, **kwargs: None
-sla = lambda *args, **kwargs: None
-sl = lambda *args, **kwargs: None
-ru = lambda *args, **kwargs: None
-def shortcut(io):
-    global sa
-    sa = lambda x,y : io.sendafter(x, y)
-    global sla
-    sla = lambda x,y : io.sendlineafter(x, y)
-    global sl
-    sl = lambda x : io.sendline(x)
-    global ru
-    ru = lambda x : io.readuntil(x)
 
 def GENERATE_SHELLCODE():
     # Example for shellcode in pwntools
